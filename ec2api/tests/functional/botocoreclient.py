@@ -61,7 +61,7 @@ class APIClientEC2(BotocoreClientBase):
         self.service = self.session.get_service('ec2')
         self.endpoint = self.service.get_endpoint(
             region_name=self.region,
-            endpoint_url=url
+            endpoint_url=url,
             verify=False)
 
     def get_url(self):
