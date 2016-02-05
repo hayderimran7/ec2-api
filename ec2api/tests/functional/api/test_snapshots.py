@@ -25,7 +25,7 @@ class SnapshotTest(base.EC2TestCase):
 
     def test_create_delete_snapshot(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -50,7 +50,7 @@ class SnapshotTest(base.EC2TestCase):
 
         self.assertEqual(desc, data['Description'])
         self.assertEqual(volume_id, data['VolumeId'])
-        self.assertEqual(1, data['VolumeSize'])
+        self.assertEqual(8, data['VolumeSize'])
         self.assertNotEmpty(data.get('State', ''))
         if 'Encrypted' in data:
             self.assertFalse(data['Encrypted'])
@@ -68,7 +68,7 @@ class SnapshotTest(base.EC2TestCase):
 
     def test_describe_snapshots(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -94,7 +94,7 @@ class SnapshotTest(base.EC2TestCase):
 
         self.assertEqual(desc, data['Description'])
         self.assertEqual(volume_id, data['VolumeId'])
-        self.assertEqual(1, data['VolumeSize'])
+        self.assertEqual(8, data['VolumeSize'])
         self.assertNotEmpty(data.get('State', ''))
         if 'Encrypted' in data:
             self.assertFalse(data['Encrypted'])
@@ -102,12 +102,12 @@ class SnapshotTest(base.EC2TestCase):
 
         resp, data = self.client.DescribeSnapshots(SnapshotIds=[snapshot_id])
         self.assertEqual(200, resp.status_code, base.EC2ErrorConverter(data))
-        self.assertEqual(1, len(data['Snapshots']))
+        self.assertEqual(8, len(data['Snapshots']))
         data = data['Snapshots'][0]
         self.assertEqual(snapshot_id, data['SnapshotId'])
         self.assertEqual(desc, data['Description'])
         self.assertEqual(volume_id, data['VolumeId'])
-        self.assertEqual(1, data['VolumeSize'])
+        self.assertEqual(8, data['VolumeSize'])
         self.assertNotEmpty(data.get('State', ''))
         if 'Encrypted' in data:
             self.assertFalse(data['Encrypted'])
@@ -116,7 +116,7 @@ class SnapshotTest(base.EC2TestCase):
         resp, data = self.client.DescribeSnapshots(OwnerIds=[ownerId])
         self.assertEqual(200, resp.status_code, base.EC2ErrorConverter(data))
         data = [s for s in data['Snapshots'] if s['SnapshotId'] == snapshot_id]
-        self.assertEqual(1, len(data))
+        self.assertEqual(8, len(data))
 
         resp, data = self.client.DeleteSnapshot(SnapshotId=snapshot_id)
         self.assertEqual(200, resp.status_code, base.EC2ErrorConverter(data))
@@ -134,7 +134,7 @@ class SnapshotTest(base.EC2TestCase):
 
     def test_create_volume_from_snapshot(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -176,7 +176,7 @@ class SnapshotTest(base.EC2TestCase):
         resp, data = self.client.DescribeVolumes(
             Filters=[{'Name': 'snapshot-id', 'Values': [snapshot_id]}])
         self.assertEqual(200, resp.status_code, base.EC2ErrorConverter(data))
-        self.assertEqual(1, len(data['Volumes']))
+        self.assertEqual(8, len(data['Volumes']))
         self.assertEqual(volume_id2, data['Volumes'][0]['VolumeId'])
 
         resp, data = self.client.DeleteSnapshot(SnapshotId=snapshot_id)
@@ -196,7 +196,7 @@ class SnapshotTest(base.EC2TestCase):
 
     def test_create_increased_volume_from_snapshot(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -221,7 +221,7 @@ class SnapshotTest(base.EC2TestCase):
                                                   final_set=('completed'))
 
         kwargs = {
-            'Size': 2,
+            'Size': 16,
             'SnapshotId': snapshot_id,
             'AvailabilityZone': CONF.aws.aws_zone
         }
@@ -233,7 +233,7 @@ class SnapshotTest(base.EC2TestCase):
         self.get_volume_waiter().wait_available(volume_id2)
 
         self.assertNotEqual(volume_id, volume_id2)
-        self.assertEqual(2, data['Size'])
+        self.assertEqual(16, data['Size'])
         self.assertEqual(snapshot_id, data['SnapshotId'])
 
         resp, data = self.client.DeleteSnapshot(SnapshotId=snapshot_id)
@@ -255,7 +255,7 @@ class SnapshotTest(base.EC2TestCase):
                           "Openstack can't delete volume with snapshots")
     def test_delete_volume_with_snapshots(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
