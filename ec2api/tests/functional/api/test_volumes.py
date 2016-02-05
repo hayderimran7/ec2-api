@@ -25,7 +25,7 @@ class VolumeTest(base.EC2TestCase):
 
     def test_create_delete_volume(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -38,7 +38,7 @@ class VolumeTest(base.EC2TestCase):
 
         if CONF.aws.run_incompatible_tests:
             self.assertEqual('standard', data['VolumeType'])
-        self.assertEqual(1, data['Size'])
+        self.assertEqual(8, data['Size'])
         if 'Encrypted' in data:
             self.assertFalse(data['Encrypted'])
         if 'SnapshotId' in data:
@@ -63,7 +63,7 @@ class VolumeTest(base.EC2TestCase):
                           "Encryption is not implemented")
     def test_create_encrypted_volume(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone,
             'Encrypted': True,
         }
@@ -84,7 +84,7 @@ class VolumeTest(base.EC2TestCase):
 
     def test_describe_volumes(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -109,7 +109,7 @@ class VolumeTest(base.EC2TestCase):
         self.assertEqual(volume_id, volume['VolumeId'])
         if CONF.aws.run_incompatible_tests:
             self.assertEqual('standard', volume['VolumeType'])
-        self.assertEqual(1, volume['Size'])
+        self.assertEqual(8, volume['Size'])
         if 'Encrypted' in volume:
             self.assertFalse(volume['Encrypted'])
         if 'SnapshotId' in volume:
@@ -129,7 +129,7 @@ class VolumeTest(base.EC2TestCase):
                           "Volume statuses are not implemented")
     def test_describe_volume_status(self):
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -176,7 +176,7 @@ class VolumeTest(base.EC2TestCase):
                                                   final_set=('running'))
 
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -187,7 +187,7 @@ class VolumeTest(base.EC2TestCase):
         self.get_volume_waiter().wait_available(volume_id)
 
         kwargs = {
-            'Device': '/dev/sdh',
+            'Device': '/dev/sdc',
             'InstanceId': instance_id,
             'VolumeId': volume_id,
         }
@@ -272,7 +272,7 @@ class VolumeTest(base.EC2TestCase):
         self.get_volume_waiter().wait_available(volume_id)
 
         kwargs = {
-            'Device': '/dev/vdh',
+            'Device': '/dev/vdc',
             'InstanceId': instance_id,
             'VolumeId': volume_id,
         }
@@ -283,7 +283,7 @@ class VolumeTest(base.EC2TestCase):
         self.assertEqual('attaching', data['State'])
 
         if CONF.aws.run_incompatible_tests:
-            bdt = self.get_instance_bdm(instance_id, '/dev/vdh')
+            bdt = self.get_instance_bdm(instance_id, '/dev/vdc')
             self.assertIsNotNone(bdt)
             self.assertEqual('attaching', bdt['Ebs']['Status'])
 
@@ -329,7 +329,7 @@ class VolumeTest(base.EC2TestCase):
                                                   final_set=('running'))
 
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -340,7 +340,7 @@ class VolumeTest(base.EC2TestCase):
         self.get_volume_waiter().wait_available(volume_id)
 
         kwargs = {
-            'Device': '/dev/sdh',
+            'Device': '/dev/sdc',
             'InstanceId': instance_id,
             'VolumeId': volume_id,
         }
@@ -355,7 +355,7 @@ class VolumeTest(base.EC2TestCase):
         self.assertEqual(400, resp.status_code, base.EC2ErrorConverter(data))
         self.assertEqual('VolumeInUse', data['Error']['Code'])
 
-        kwargs['Device'] = '/dev/sdi'
+        kwargs['Device'] = '/dev/sdc'
         resp, data = self.client.AttachVolume(*[], **kwargs)
         self.assertEqual(400, resp.status_code, base.EC2ErrorConverter(data))
         self.assertEqual('VolumeInUse', data['Error']['Code'])
@@ -409,7 +409,7 @@ class VolumeTest(base.EC2TestCase):
                                                   final_set=('running'))
 
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -420,7 +420,7 @@ class VolumeTest(base.EC2TestCase):
         self.get_volume_waiter().wait_available(volume_id)
 
         kwargs = {
-            'Device': '/dev/sdh',
+            'Device': '/dev/sdc',
             'InstanceId': instance_id,
             'VolumeId': volume_id,
         }
@@ -472,7 +472,7 @@ class VolumeTest(base.EC2TestCase):
                                                   final_set=('running'))
 
         kwargs = {
-            'Size': 1,
+            'Size': 8,
             'AvailabilityZone': CONF.aws.aws_zone
         }
         resp, data = self.client.CreateVolume(*[], **kwargs)
@@ -482,7 +482,7 @@ class VolumeTest(base.EC2TestCase):
         self.get_volume_waiter().wait_available(volume_id)
 
         kwargs = {
-            'Device': '/dev/sdh',
+            'Device': '/dev/sdc',
             'InstanceId': instance_id,
             'VolumeId': volume_id,
         }
@@ -494,7 +494,7 @@ class VolumeTest(base.EC2TestCase):
 
         kwargs = {
             'InstanceId': instance_id,
-            'BlockDeviceMappings': [{'DeviceName': '/dev/sdh',
+            'BlockDeviceMappings': [{'DeviceName': '/dev/sdc',
                                      'Ebs': {'VolumeId': volume_id,
                                              'DeleteOnTermination': True}}],
         }
