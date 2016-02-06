@@ -116,7 +116,7 @@ class SnapshotTest(base.EC2TestCase):
         resp, data = self.client.DescribeSnapshots(OwnerIds=[ownerId])
         self.assertEqual(200, resp.status_code, base.EC2ErrorConverter(data))
         data = [s for s in data['Snapshots'] if s['SnapshotId'] == snapshot_id]
-        self.assertEqual(8, len(data))
+        self.assertEqual(1, len(data))
 
         resp, data = self.client.DeleteSnapshot(SnapshotId=snapshot_id)
         self.assertEqual(200, resp.status_code, base.EC2ErrorConverter(data))
