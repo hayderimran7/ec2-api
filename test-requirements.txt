@@ -1,3 +1,4 @@
+botocore==0.103
 coverage>=3.6
 discover
 feedparser
